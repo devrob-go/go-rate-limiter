@@ -6,7 +6,8 @@ import (
 )
 
 type inMemoryBackend struct {
-	store sync.Map
+	store         sync.Map
+	defaultBucket bucket
 }
 
 type bucket struct {
@@ -18,16 +19,22 @@ type bucket struct {
 
 // NewInMemoryBackend initializes an in-memory rate limiter backend.
 func NewInMemoryBackend(maxTokens int, refillRate time.Duration) Backend {
-	return &inMemoryBackend{}
+	return &inMemoryBackend{
+		store: sync.Map{},
+		defaultBucket: bucket{
+			maxTokens:  maxTokens,
+			refillRate: refillRate,
+			lastRefill: time.Now(),
+		},
+	}
 }
 
 func (b *inMemoryBackend) Take(key string, tokens int) (bool, error) {
 	now := time.Now()
-
 	val, _ := b.store.LoadOrStore(key, &bucket{
-		tokens:     tokens,
-		maxTokens:  tokens,
-		refillRate: time.Second,
+		tokens:     b.defaultBucket.maxTokens,
+		maxTokens:  b.defaultBucket.maxTokens,
+		refillRate: b.defaultBucket.refillRate,
 		lastRefill: now,
 	})
 	bkt := val.(*bucket)
@@ -46,6 +53,7 @@ func (b *inMemoryBackend) Take(key string, tokens int) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+
 }
 
 func (b *inMemoryBackend) Reset(key string) error {

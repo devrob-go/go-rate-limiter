@@ -8,12 +8,12 @@ import (
 )
 
 func TestInMemoryBackend(t *testing.T) {
-	backend := limiter.NewInMemoryBackend(5, time.Second)
+	backend := limiter.NewInMemoryBackend(5, time.Second) // 5 tokens, 1 second refill
 	rateLimiter := limiter.New(backend)
 
 	for i := 0; i < 5; i++ {
 		if ok, _ := rateLimiter.Take("test", 1); !ok {
-			t.Fatalf("Expected request to succeed, got failure at %d", i)
+			t.Fatalf("Expected request to succeed, got failure at %d", i+1)
 		}
 	}
 
