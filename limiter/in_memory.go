@@ -1,4 +1,3 @@
-// limiter/in_memory.go
 package limiter
 
 import (

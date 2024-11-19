@@ -1,4 +1,3 @@
-// benchmarks/limiter_benchmark.go
 package benchmarks
 
 import (

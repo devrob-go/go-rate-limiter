@@ -1,4 +1,3 @@
-// limiter/redis_backend.go
 package limiter
 
 import (

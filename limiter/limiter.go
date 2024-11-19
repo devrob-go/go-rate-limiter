@@ -1,4 +1,3 @@
-// limiter/limiter.go
 package limiter
 
 type RateLimiter struct {

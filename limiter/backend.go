@@ -1,4 +1,3 @@
-// limiter/backend.go
 package limiter
 
 type Backend interface {
